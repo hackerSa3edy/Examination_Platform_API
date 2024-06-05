@@ -50,11 +50,6 @@
     margin-right: 40px;
 }
 
-/* .mainPage .questions .q1 .title .plus {
-    font-size: 18px;
-    cursor: pointer;
-} */
-
 .mainPage .questions .q1 .answers {
     /*color: #2052a2;
     */font-family: var(--smallFont);
