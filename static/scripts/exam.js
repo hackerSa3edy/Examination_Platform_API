@@ -1,13 +1,3 @@
-// // show and hide choices 
-// $(".title .plus").click(function () {
-//     var titleDiv = $(this).parent();
-//     titleDiv.toggleClass("appear");
-//     if (titleDiv.hasClass("appear")) {
-//         $(this).html('<i class="fa-solid fa-angles-up"></i>');
-//     } else {
-//         $(this).html('<i class="fa-solid fa-angles-down"></i>');
-//     }
-// });
 
 const answers = $(".answers");
 answers.each(function() {
