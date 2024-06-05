@@ -81,10 +81,6 @@
     cursor: pointer;
 }
 
-/* .mainPage .questions .q1 .appear + .answers {
-    display: block;
-} */
-
 .mainPage .questions .q1 .answers .element {
     outline: 4px solid #85aae4;
     background-color: var(--secondaryColor);
