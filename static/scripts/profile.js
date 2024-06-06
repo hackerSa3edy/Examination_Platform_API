@@ -127,11 +127,50 @@ $(document).ready(function () {
       headers: {
         Authorization: 'Bearer ' + token
       },
-      data: userData,
+      contentType: 'application/json',
+      data: JSON.stringify(userData),
       success: function (data) {
         // Refresh user profile
-        getUserProfile(userId, token);
 
+        // Insert data into HTML page
+        $('#userName').val(data.username);
+        $('.profile p').text(data.username);
+        $('.mainData h3').text(data.username);
+
+        $('#userEmail').val(data.email);
+
+        $('#city').val(data.city);
+
+        if ('level' in data) {
+          $('#h-level').text('Level ' + data.level);
+          $('#level').val(data.level);
+        } else {
+          $('#level').hide();
+          $('#h-level').hide();
+        }
+
+        $('#name1').val(data.first_name);
+        $('#name2').val(data.second_name);
+        $('#name3').val(data.third_name);
+        $('#name4').val(data.fourth_name);
+        $('#gender').val(data.gender);
+        $('#birth_date').val(data.birth_date);
+        $('#address').val(data.address);
+        $('#phone_number').val(data.phone);
+
+        if ('department' in data) {
+          $('#department').val(data.department.title);
+        } else {
+          $('#department').hide();
+        }
+
+        if ('specialization' in data) {
+          $('#specialization').val(data.courses[0].title);
+        } else {
+          $('#specialization').hide();
+        }
+
+        $('#joined_at').text('Joined at : ' + new Date(data.date_joined).toLocaleDateString());
         // Make all inputs readonly
         $('input').each(function (el) {
           $(this).attr('readonly', 'true');
