@@ -9,6 +9,7 @@ Classes:
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 from exams.serializers.exams import ExamSerializer
 from exams.filters.exams import ExamFilter
 from accounts.permissions.isAdmin import IsAdmin
