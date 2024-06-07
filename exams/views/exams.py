@@ -16,6 +16,7 @@ from accounts.permissions.isAdmin import IsAdmin
 from accounts.permissions.isInstructor import IsInstructor
 from accounts.permissions.isStudent import IsStudent
 from accounts.permissions.isOwner import IsOwner
+from exams.models import Result
 from exams.models.exams import Exam
 
 
@@ -34,14 +35,16 @@ class ExamListCreate(ListCreateAPIView):
     """
 
     def get_queryset(self):
-        user = self.request.user
-        print(user)
-        if user.is_instructor:
-            return Exam.objects.filter(instructor=user)
-        elif user.is_student:
-            return Exam.objects.filter(Q(students__in=[user]))
-        else:
-            return Exam.objects.none()
+        # Get all exams
+        queryset = Exam.objects.all()
+
+        # Get exams that have results
+        exams_with_results = Result.objects.values_list('exam', flat=True).distinct()
+
+        # Filter out exams that have results
+        queryset = queryset.exclude(id__in=exams_with_results)
+
+        return queryset
 
     serializer_class = ExamSerializer
     filter_backends = (DjangoFilterBackend,)
@@ -73,7 +76,17 @@ class ExamRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     - get_permissions: Overrides the default method to set the permissions based on the request method.
     """
 
-    queryset = Exam.objects.all()
+    def get_queryset(self):
+        # Get all exams
+        queryset = Exam.objects.all()
+
+        # Get exams that have results
+        exams_with_results = Result.objects.values_list('exam', flat=True).distinct()
+
+        # Filter out exams that have results
+        queryset = queryset.exclude(id__in=exams_with_results)
+
+        return queryset
     serializer_class = ExamSerializer
 
     def get_permissions(self):
