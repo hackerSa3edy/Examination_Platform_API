@@ -305,8 +305,15 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    position: relative; /* Add this line if not already present */
+    z-index: 9999; /* Add this line */
 }
 
 .start-exam:hover {
     background-color: #003580;
+}
+
+.start-exam:disabled {
+    background-color: #ccc; /* Change as needed */
+    cursor: not-allowed;
 }

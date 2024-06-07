@@ -63,7 +63,7 @@ $(document).ready(function () {
           <div class="ins">
             Ins / ${exam.instructor.first_name} ${exam.instructor.second_name}
           </div>
-          <input type="button" class="start-exam" exam_id="${exam.id}" value="Start">
+          <button type="button" class="start-exam" exam_id="${exam.id}">Start</button>
         </div>`;
       examsContainer.append(examDiv);
 
@@ -73,9 +73,9 @@ $(document).ready(function () {
         const endDate = new Date(exam.end_date);
         const now = new Date();
         if (now > startDate && now < endDate) {
-          $(`input.start-exam[exam_id="${exam.id}"]`).prop('disabled', false);
+          $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', false);
         } else {
-          $(`input.start-exam[exam_id="${exam.id}"]`).prop('disabled', true);
+          $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', true);
         }
       }, 0);
     });
