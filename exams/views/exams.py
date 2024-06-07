@@ -32,7 +32,16 @@ class ExamListCreate(ListCreateAPIView):
     - get_permissions: Overrides the default method to set the permissions based on the request method.
     """
 
-    queryset = Exam.objects.all()
+    def get_queryset(self):
+        user = self.request.user
+        print(user)
+        if user.is_instructor:
+            return Exam.objects.filter(instructor=user)
+        elif user.is_student:
+            return Exam.objects.filter(Q(students__in=[user]))
+        else:
+            return Exam.objects.none()
+
     serializer_class = ExamSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ExamFilter
