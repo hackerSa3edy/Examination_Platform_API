@@ -84,7 +84,7 @@ $(document).ready(function () {
         // Check if the button is not disabled
         if (!$(this).prop('disabled')) {
           // Navigate to the exam page
-          window.location.href = `/static/html/exam.html?exam_id=${exam.id}`;
+          window.location.href = `/static/html/exam.html?exam_id=${exam.id}&exam_title=${exam.title}`;
         }
       });
     });
