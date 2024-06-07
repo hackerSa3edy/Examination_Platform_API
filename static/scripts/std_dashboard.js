@@ -7,6 +7,7 @@ $(document).ready(function () {
   }).join(''));
 
   const userId = JSON.parse(jsonPayload).user_id;
+
   const handleAjaxError = (jqXHR, textStatus) => {
     $('#flash-message').text(
       jqXHR?.responseJSON?.detail ||
@@ -20,13 +21,15 @@ $(document).ready(function () {
     const courses = data.courses;
     const coursesContainer = $('.courses');
 
+    coursesContainer.empty();
+    coursesContainer.append('<h2>Semester Courses</h2>');
     courses.forEach(course => {
       coursesContainer.append(`<div class="course">${course.title}</div>`);
     });
   };
 
   const getUserProfile = (userId, token) => {
-    $.ajax({
+    return $.ajax({
       url: 'http://127.0.0.1/api/accounts/students/' + userId + '/',
       type: 'GET',
       headers: {
@@ -37,5 +40,103 @@ $(document).ready(function () {
     });
   };
 
-  getUserProfile(userId, token);
+  const populateExams = (data) => {
+    const exams = data.results;
+    const examsContainer = $('.nonFinishedExams .exams');
+
+    examsContainer.empty();
+    exams.forEach(exam => {
+      const examDiv = `
+        <div class="exam">
+          <div class="title">
+            <h3>ID: ${exam.id}</h3>
+            <h3>${exam.title}</h3>
+            <p>${exam.course.title}</p>
+          </div>
+          <div class="score">
+            <p>exam score: ${exam.exam_score}</p>
+          </div>
+          <div class="date">
+            <p class="start">start : ${new Date(exam.start_date).toLocaleString()}</p>
+            <p class="end">end : ${new Date(exam.end_date).toLocaleString()}</p>
+          </div>
+          <div class="ins">
+            Ins / ${exam.instructor.first_name} ${exam.instructor.second_name}
+          </div>
+          <input type="button" class="start-exam" exam_id="${exam.id}" value="Start">
+        </div>`;
+      examsContainer.append(examDiv);
+
+      setTimeout(() => {
+        // Disable the start button if the current date is less than the start date
+        const startDate = new Date(exam.start_date);
+        const endDate = new Date(exam.end_date);
+        const now = new Date();
+        if (now > startDate && now < endDate) {
+          $(`input.start-exam[exam_id="${exam.id}"]`).prop('disabled', false);
+        } else {
+          $(`input.start-exam[exam_id="${exam.id}"]`).prop('disabled', true);
+        }
+      }, 0);
+    });
+  };
+
+  const getExams = (token) => {
+    $.ajax({
+      url: 'http://127.0.0.1/api/exams/',
+      type: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      },
+      success: populateExams,
+      error: handleAjaxError
+    });
+  };
+
+  const populateFinishedExams = (data) => {
+    const results = data.results;
+    const examsContainer = $('.finishedExams .exams');
+
+    examsContainer.empty();
+    results.forEach(result => {
+      const resultDiv = `
+        <div class="exam">
+          <div class="title">
+            <h3>ID: ${result.exam.id}</h3>
+            <h3>${result.exam.title}</h3>
+            <p>${result.exam.course_title}</p>
+          </div>
+          <div class="score">
+            <p class="exam_score">exam score: ${result.exam.exam_score}</p>
+            <p class="std_score">student score: ${result.score}</p>
+          </div>
+          <div class="date">
+            <p class="start">start : ${new Date(result.exam.start_date).toLocaleString()}</p>
+            <p class="end">end : ${new Date(result.exam.end_date).toLocaleString()}</p>
+          </div>
+          <div class="ins">
+            Ins / ${result.instructor.first_name} ${result.instructor.second_name}
+          </div>
+        </div>`;
+      examsContainer.append(resultDiv);
+    });
+  };
+
+  const getFinishedExams = (username, token) => {
+    $.ajax({
+      url: `http://127.0.0.1/api/exams/results/?student_name=${username}`,
+      type: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      },
+      success: populateFinishedExams,
+      error: handleAjaxError
+    });
+  };
+
+  // Call getFinishedExams after getUserProfile
+  getUserProfile(userId, token).done((data) => {
+    getFinishedExams(data.username, token);
+  });
+  getExams(token);
 });

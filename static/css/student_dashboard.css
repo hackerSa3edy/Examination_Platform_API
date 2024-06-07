@@ -198,7 +198,7 @@
 .mainPage .finishedExams .exams .exam .score {
     display: flex;
     justify-content: space-between;
-    padding: 15px 25px;
+    padding: 15px 5px;
     align-items: center;
     font-size: 18px;
     font-family: var(--smallFont);
@@ -220,28 +220,6 @@
     font-weight: bold;
     border-bottom: 2px solid #002053;
     width: fit-content;
-}
-
-.mainPage .nonFinishedExams .exams .exam:hover,
-.mainPage .finishedExams .exams .exam:hover {
-    background-color: #2052a2;
-    border: 1px solid #EEF7FF;
-}
-
-.mainPage .nonFinishedExams .exams .exam:hover h3,
-.mainPage .finishedExams .exams .exam:hover h3 {
-    color: #EEF7FF;
-}
-
-.mainPage .nonFinishedExams .exams .exam:hover p,
-.mainPage .finishedExams .exams .exam:hover p {
-    color: #EEF7FF;
-}
-
-.mainPage .nonFinishedExams .exams .exam:hover .ins,
-.mainPage .finishedExams .exams .exam:hover .ins {
-    color: #b3d6f5;
-    border-color: #b3d6f5;
 }
 
 .mainPage .finishedExams {
@@ -314,4 +292,21 @@
     border: 1px solid transparent;
     border-radius: 4px;
     margin-top: 20px;
+}
+
+.start-exam {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: var(--mainColor);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.start-exam:hover {
+    background-color: #003580;
 }
