@@ -78,7 +78,7 @@ $(document).ready(function () {
   }
 
   // Extract JWT token from cookie
-  const token = document.cookie.replace(/(?:(?:^|.*;\s*)jwtIdentity\s*=\s*([^;]*).*$)|^.*$/, '$1');
+  const token = document.cookie.replace(/(?:(?:^|.*;\s*)jwtAccess\s*=\s*([^;]*).*$)|^.*$/, '$1');
 
   // Decode JWT token to get USER_ID
   const base64Url = token.split('.')[1];
