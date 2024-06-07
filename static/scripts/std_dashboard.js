@@ -78,6 +78,15 @@ $(document).ready(function () {
           $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', true);
         }
       }, 0);
+
+      // Add a click event listener to the start-exam button
+      $(`button.start-exam[exam_id="${exam.id}"]`).click(function () {
+        // Check if the button is not disabled
+        if (!$(this).prop('disabled')) {
+          // Navigate to the exam page
+          window.location.href = `/static/html/exam.html?exam_id=${exam.id}`;
+        }
+      });
     });
   };
 
