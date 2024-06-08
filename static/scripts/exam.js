@@ -37,6 +37,33 @@ $(document).ready(function () {
   const studentId = JSON.parse(jsonPayload).user_id;
   // const studentId = 6;
 
+  $('.mainPage h3.exam-title').text(examTitle);
+  // Add this function to calculate the difference between two dates
+  function calculateTimeDifference (startDate, endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diff = end - start; // difference in milliseconds
+    const minutes = Math.floor(diff / 1000 / 60);
+    return minutes;
+  }
+
+  // Send a request to retrieve the exam
+  $.ajax({
+    url: `${BASE_URL}${examId}/`,
+    type: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    success: function (response) {
+      const timeOfExam = calculateTimeDifference(response.start_date, response.end_date);
+      $('.mainPage .exam-duration').text(timeOfExam);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $('.questions').html(`<div class="error">${jqXHR?.responseJSON?.detail || textStatus}</div>`);
+      $('button').prop('disabled', true);
+    }
+  });
+
   function sendRequest (url, type, data, successCallback) {
     $.ajax({
       url: url,
@@ -59,14 +86,14 @@ $(document).ready(function () {
   function updateQuestionsAndButtons (response) {
     $('.questions').empty();
     $.each(response.results, function (i, question) {
-      const questionDiv = $('<div>').addClass('q1').data('question-id', question.id);
+      const questionDiv = $('<div>').addClass(`q1 question-id-${question.id}`).data('question-id', question.id);
       const titleDiv = $('<div>').addClass('title');
       const h4 = $('<h4>').text(question.text);
       titleDiv.append(h4);
       questionDiv.append(titleDiv);
       const answersDiv = $('<div>').addClass('answers');
       $.each(question.choices, function (j, choice) {
-        const p = $('<p>').text(choice.text).data('choice-id', choice.id).data('question-id', question.id);
+        const p = $('<p>').addClass(`choice-id-${choice.id}`).text(choice.text).data('choice-id', choice.id).data('question-id', question.id);
         answersDiv.append(p);
       });
       questionDiv.append(answersDiv);
@@ -96,6 +123,36 @@ $(document).ready(function () {
         choiceP.addClass('element');
       });
     });
+
+    $('div.answers p').on('click', function () {
+      const choiceId = $(this).data('choice-id');
+      const questionId = $(this).data('question-id');
+      const questionDiv = $('.q1').filter(function () {
+        return $(this).data('question-id') === questionId;
+      });
+      const answerId = questionDiv.data('answer-id');
+
+      if (answerId) {
+        console.log('clicked');
+        sendRequest(`${BASE_URL}answers/${answerId}/`, 'PUT', { student_choice: choiceId }, function (response) {
+          questionDiv.find('.element').removeClass('element');
+          const choiceElement = $(`.choice-id-${choiceId}`);
+          choiceElement.addClass('element');
+        });
+      } else {
+        sendRequest(`${BASE_URL}answers/`, 'POST', {
+          student: studentId,
+          exam: examId,
+          question: questionId,
+          student_choice: choiceId
+        }, function (response) {
+          questionDiv.data('answer-id', response.id);
+          questionDiv.find('.element').removeClass('element');
+          const choiceElement = $(`.choice-id-${choiceId}`);
+          choiceElement.addClass('element');
+        });
+      }
+    });
   }
 
   let counter = 1;
@@ -117,30 +174,11 @@ $(document).ready(function () {
     }
   });
 
-  $('body').on('click', 'div.answers p', function () {
-    const choiceId = $(this).data('choice-id');
-    const questionId = $(this).data('question-id');
-    const questionDiv = $('.q1').filter(function () {
-      return $(this).data('question-id') === questionId;
-    });
-    const answerId = questionDiv.data('answer-id');
+  $('.finish-button').click(function () {
+    window.location.href = '/static/html/student_dashboard.html';
+  });
 
-    if (answerId) {
-      sendRequest(`${BASE_URL}answers/${answerId}/`, 'PUT', { student_choice: choiceId }, function (response) {
-        questionDiv.find('.element').removeClass('element');
-        $(this).addClass('element');
-      });
-    } else {
-      sendRequest(`${BASE_URL}answers/`, 'POST', {
-        student: studentId,
-        exam: examId,
-        question: questionId,
-        student_choice: choiceId
-      }, function (response) {
-        questionDiv.data('answer-id', response.id);
-        questionDiv.find('.element').removeClass('element');
-        $(this).addClass('element');
-      });
-    }
+  $('.terminal-button').click(function () {
+    window.open('/terminal', '_blank');
   });
 });

@@ -54,7 +54,10 @@ $(document).ready(function () {
             <p>${exam.course.title}</p>
           </div>
           <div class="score">
-            <p>exam score: ${exam.exam_score}</p>
+            <div class="row">
+              <p>exam score</p>
+              <p>${exam.exam_score}</p>
+            </div>
           </div>
           <div class="date">
             <p class="start">start : ${new Date(exam.start_date).toLocaleString()}</p>
@@ -116,8 +119,14 @@ $(document).ready(function () {
             <p>${result.exam.course_title}</p>
           </div>
           <div class="score">
-            <p class="exam_score">exam score: ${result.exam.exam_score}</p>
-            <p class="std_score">student score: ${result.score}</p>
+            <div class="row">
+              <p class="exam_score">exam score</p>
+              <p>${result.exam.exam_score}</p>
+            </div>
+            <div class="row">
+              <p class="std_score">student score</p>
+              <p>${result.score}</p>
+            </div>
           </div>
           <div class="date">
             <p class="start">start : ${new Date(result.exam.start_date).toLocaleString()}</p>
