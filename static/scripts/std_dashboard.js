@@ -1,4 +1,7 @@
 $(document).ready(function () {
+  // Replace 'Africa/Cairo' with your desired timezone
+  const options = { timeZone: 'Africa/Cairo', hour12: true };
+
   const token = document.cookie.replace(/(?:(?:^|.*;\s*)jwtAccess\s*=\s*([^;]*).*$)|^.*$/, '$1');
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace('-', '+').replace('_', '/');
@@ -60,8 +63,8 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="date">
-            <p class="start">start : ${new Date(exam.start_date).toLocaleString()}</p>
-            <p class="end">end : ${new Date(exam.end_date).toLocaleString()}</p>
+            <p class="start">start : ${new Date(exam.start_date).toLocaleString('en-US', options)}</p>
+            <p class="end">end : ${new Date(exam.end_date).toLocaleString('en-US', options)}</p>
           </div>
           <div class="ins">
             Ins / ${exam.instructor.first_name} ${exam.instructor.second_name}
@@ -129,8 +132,8 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="date">
-            <p class="start">start : ${new Date(result.exam.start_date).toLocaleString()}</p>
-            <p class="end">end : ${new Date(result.exam.end_date).toLocaleString()}</p>
+            <p class="start">start : ${new Date(result.exam.start_date).toLocaleString('en-US', options)}</p>
+            <p class="end">end : ${new Date(result.exam.end_date).toLocaleString('en-US', options)}</p>
           </div>
           <div class="ins">
             Ins / ${result.instructor.first_name} ${result.instructor.second_name}
