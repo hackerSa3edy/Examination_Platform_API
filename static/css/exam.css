@@ -127,7 +127,16 @@ hr {
     }
 }
 
-button.prev-next-button:disabled {
-    background-color: #ccc; /* Change as needed */
+button:disabled {
+    background-color: #ccc /* Change as needed */ !important;
     cursor: not-allowed;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    border: 1px solid red;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #ffe6e6;
 }
