@@ -47,7 +47,7 @@ $(document).ready(function () {
     examsContainer.empty();
     exams.forEach(exam => {
       const examDiv = `
-        <div class="exam">
+        <div class="exam" exam_id="${exam.id}">
           <div class="title">
             <h3>ID: ${exam.id}</h3>
             <h3>${exam.title}</h3>
@@ -78,7 +78,7 @@ $(document).ready(function () {
         if (now > startDate && now < endDate) {
           $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', false);
         } else {
-          $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', true);
+          $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', true).text('Exam is over');
         }
       }, 0);
 

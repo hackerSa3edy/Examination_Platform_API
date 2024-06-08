@@ -39,12 +39,20 @@ $(document).ready(function () {
 
   $('.mainPage h3.exam-title').text(examTitle);
   // Add this function to calculate the difference between two dates
-  function calculateTimeDifference (startDate, endDate) {
-    const start = new Date(startDate);
+  function calculateTimeDifference (endDate) {
+    const now = new Date();
     const end = new Date(endDate);
-    const diff = end - start; // difference in milliseconds
-    const minutes = Math.floor(diff / 1000 / 60);
-    return minutes;
+    const diff = end - now; // difference in milliseconds
+    const seconds = Math.floor(diff / 1000);
+    return seconds > 0 ? seconds : 0;
+  }
+
+  function formatTime (seconds) {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+    const minutes = Math.floor((seconds % (60 * 60)) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${days} days, ${hours} hours, ${minutes} minutes, ${remainingSeconds} seconds`;
   }
 
   // Send a request to retrieve the exam
@@ -55,8 +63,21 @@ $(document).ready(function () {
       Authorization: `Bearer ${token}`
     },
     success: function (response) {
-      const timeOfExam = calculateTimeDifference(response.start_date, response.end_date);
-      $('.mainPage .exam-duration').text(timeOfExam);
+      let timeOfExam = calculateTimeDifference(response.end_date);
+      $('.mainPage .exam-duration').text(formatTime(timeOfExam));
+
+      // Start a timer that updates every second
+      const timer = setInterval(function () {
+        timeOfExam--;
+        $('.mainPage .exam-duration').text(formatTime(timeOfExam));
+
+        // Stop the timer when time runs out
+        if (timeOfExam <= 0) {
+          clearInterval(timer);
+          // You can add code here to handle what happens when time runs out
+          window.location.href = '/static/html/student_dashboard.html';
+        }
+      }, 1000);
     },
     error: function (jqXHR, textStatus, errorThrown) {
       $('.questions').html(`<div class="error">${jqXHR?.responseJSON?.detail || textStatus}</div>`);
