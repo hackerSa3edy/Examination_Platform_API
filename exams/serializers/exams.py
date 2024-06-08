@@ -47,13 +47,13 @@ class ExamSerializer(serializers.ModelSerializer):
             "title": instance.course.title,
         }
         # Convert start_date and end_date to Cairo timezone
-        start_date_utc = instance.start_date
-        end_date_utc = instance.end_date
-        cairo_tz = pytz_timezone('Africa/Cairo')
-        start_date_tz = start_date_utc.astimezone(cairo_tz)
-        end_date_tz = end_date_utc.astimezone(cairo_tz)
-        representation["start_date"] = start_date_tz.isoformat()
-        representation["end_date"] = end_date_tz.isoformat()
+        # start_date_utc = instance.start_date
+        # end_date_utc = instance.end_date
+        # cairo_tz = pytz_timezone('Africa/Cairo')
+        # start_date_tz = start_date_utc.astimezone(cairo_tz)
+        # end_date_tz = end_date_utc.astimezone(cairo_tz)
+        # representation["start_date"] = start_date_tz.isoformat()
+        # representation["end_date"] = end_date_tz.isoformat()
 
         return representation
 
@@ -69,3 +69,16 @@ class ExamSerializer(serializers.ModelSerializer):
             end_date_tz = end_date_utc.astimezone(cairo_tz)
             validated_data['end_date'] = end_date_tz
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        # Convert start_date and end_date to Cairo timezone before saving
+        cairo_tz = pytz_timezone('Africa/Cairo')
+        if 'start_date' in validated_data:
+            start_date_utc = validated_data['start_date']
+            start_date_tz = start_date_utc.astimezone(cairo_tz)
+            validated_data['start_date'] = start_date_tz
+        if 'end_date' in validated_data:
+            end_date_utc = validated_data['end_date']
+            end_date_tz = end_date_utc.astimezone(cairo_tz)
+            validated_data['end_date'] = end_date_tz
+        return super().update(instance, validated_data)
