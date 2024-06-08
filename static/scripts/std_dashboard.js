@@ -81,7 +81,10 @@ $(document).ready(function () {
         if (now > startDate && now < endDate) {
           $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', false);
         } else {
-          $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', true).text('Exam is over');
+          $(`button.start-exam[exam_id="${exam.id}"]`).prop('disabled', true);
+          if (now > endDate) {
+            $(`button.start-exam[exam_id="${exam.id}"]`).text('Exam is over');
+          }
         }
       }, 0);
 
